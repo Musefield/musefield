@@ -20,3 +20,8 @@ services:
     volumes:
       - /srv/musefield/docs:/workspace/docs:ro
       - /srv/musefield/reports:/workspace/reports
+
+  mf-runner:
+    user: "${MF_UID}:${MF_GID}"
+    volumes:
+      - /srv/musefield:/workspace
