@@ -5,6 +5,9 @@ builder_config:
   verification_schedule:
     rrule: "R/PT14D"
   thresholds:
+   min_transparency: 0.70
+   min_accuracy: 0.90
+   min_reproducibility: 0.95
     min_coherence: 0.75
     min_code_integrity: 0.85
     min_automation_ratio: 0.70
