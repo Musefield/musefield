@@ -1,0 +1,8 @@
+- ts: 2025-10-21T00:00:00Z
+  action: "repo_init"
+  policy_check: "na"
+  reviewer: "insight_engine"
+- ts: 2025-10-21T00:45:00Z
+  action: "builder_enabled"
+  policy_check: "reversibility:pass; slo_guard:stub; cfs_guard:stub"
+  reviewer: "insight_engine"
