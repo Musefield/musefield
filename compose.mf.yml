@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  mf-builder:
+    image: your/mf-builder:latest
+    user: "${MF_UID}:${MF_GID}"
+    restart: unless-stopped
+    environment:
+      - BUILDER_CONFIG=/workspace/config/builder.manifest.yaml
+    volumes:
+      - /srv/musefield/docs:/workspace/docs:ro
+      - /srv/musefield/reports:/workspace/reports
+      - /srv/musefield/config:/workspace/config:ro
+    ports:
+      - "8082:8081"  # avoid clashing with mf-runner on 8081
+
+  aletheia:
+    image: your/aletheia:latest
+    user: "${MF_UID}:${MF_GID}"
+    restart: unless-stopped
+    volumes:
+      - /srv/musefield/docs:/workspace/docs:ro
+      - /srv/musefield/reports:/workspace/reports
