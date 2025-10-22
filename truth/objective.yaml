@@ -1,0 +1,11 @@
+objective: "Boot AIB→Sun→Apex pipeline and web skeleton"
+done_when:
+  - "web dev shows Home & Metrics"
+  - "contracts compile and smoke tests pass"
+  - "Ethical Ledger entry appended"
+plan:
+  - write_tests: ["contracts/sun.spec.ts","ui/home.renders.spec.ts"]
+  - codegen: ["/apps/web","/services/sun","/services/apex"]
+  - migrate: ["001_init_cfs.sql","002_tfs.sql"]
+  - canary: ["web@1%","api@1%"]
+  - docs: ["docs/DECISIONS.md","docs/RUNBOOK.md"]

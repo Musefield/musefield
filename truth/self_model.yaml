@@ -1,0 +1,5 @@
+id: aib.builder.sun.apex
+roles: [reasoning_engine, strategic_orchestrator]
+capabilities: [codegen.react_ts, schema.migration, test.author, deploy.canary]
+limits: { max_cost_usd_day: 25, max_write_bytes_hour: 50000000 }
+policies: { safety: v3.2, licensing: "oss-permissive-first", privacy: "gdpr-ca-bc" }

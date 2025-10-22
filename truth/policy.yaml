@@ -1,0 +1,10 @@
+gates:
+  - name: reversibility
+    require: ["db.migrations.have_down", "deploy.has_rollback"]
+  - name: slo_guard
+    target: { api_p95_ms: 300, error_budget_burn_pct: 20 }
+  - name: cfs_guard
+    target: { coherence_index_min: 0.70, rhythm_variance_max: 0.20 }
+  - name: cop_lint
+    require: ["language.inclusive_pass", "license.scan_pass"]
+autonomy_level: 2

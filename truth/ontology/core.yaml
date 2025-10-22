@@ -1,0 +1,11 @@
+terms:
+  - id: CFS
+    name: Coherence Flow System
+    kind: system
+    related: [TFS]
+  - id: TFS
+    name: Telemetry Filing System
+    kind: system
+rules:
+  - id: drift_block
+    desc: "Block PRs adding >=3 new terms without ontology PR."

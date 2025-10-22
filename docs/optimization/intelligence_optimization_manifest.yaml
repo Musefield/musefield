@@ -1,0 +1,82 @@
+# ============================================================
+# MuseField — Intelligence Optimization Manifest
+# Version: 1.0
+# ============================================================
+
+manifest:
+  id: intelligence_optimization_manifest
+  version: 1.0
+  scope: global
+  author: "MuseField Integration Council"
+  last_updated: "2025-10-20"
+
+core_systems:
+  cognitive:
+    - id: sun
+      role: ingress_router
+      description: "Distributes informational pulses and manages system rhythm."
+    - id: apex
+      role: strategic_orchestrator
+      description: "Integrates multi-agent planning and cross-loop coordination."
+    - id: aib
+      role: reasoning_engine
+      description: "Central AI brain providing coherence metrics and orchestration."
+    - id: ab
+      role: temporal_memory_engine
+      description: "Stores and retrieves data by time-space-context."
+    - id: insight_engine
+      role: audit_optimizer
+      description: "Consolidates MetaGodnition, Buddha, and Oracle for efficiency."
+  verification:
+    - { id: aletheia, role: truth_metric, description: "Probabilistic validation and trust scoring." }
+    - { id: arbiter, role: governance_enforcer, description: "Ethical and rule enforcement." }
+    - { id: legalis, role: compliance_layer, description: "Jurisdictional and consent management." }
+  ecological:
+    - { id: gaia, role: ecological_coordinator, description: "Maps cultural and environmental data." }
+    - { id: lakshmi, role: value_flow_manager, description: "Manages regenerative economy and reciprocity." }
+    - { id: musefund, role: regenerative_treasury, description: "Allocates surplus to collective wellbeing." }
+  interface:
+    - { id: hermes, role: translation_layer, description: "Translates system output into human language." }
+    - { id: qualia, role: sensory_harmonizer, description: "Maintains cross-modal coherence of experience." }
+
+obsolete_systems:
+  - { old: metagodnition, replaced_by: insight_engine.audit, reason: "Merged for unified reflection logic." }
+  - { old: truth_flow_system, replaced_by: coherence_flow_system, reason: "Name collision with TFS." }
+  - { old: light_code_system, replaced_by: cfs.emission, reason: "Functional duplicate of coherence emission." }
+  - { old: questionwave, replaced_by: cfs.mode_curiosity, reason: "Redundant inquiry propagation." }
+  - { old: mythopoeticus_top_level, replaced_by: ethos.symbolic_layer, reason: "Narrative overlap." }
+  - { old: human_player_avatars, replaced_by: npc_agents, reason: "AGL simulation autonomy upgrade." }
+  - { old: planetary_agents_unspecified, replaced_by: planetary_schema_dsl, reason: "Undefined data type schema." }
+  - { old: duplicate_tokens, replaced_by: token_registry, reason: "Centralized token semantics." }
+
+conditional_systems:
+  - { id: nine_muses, condition: "retain_for_harmony_gate", note: "Used for ethical-aesthetic checks." }
+  - { id: elan_vitalis, condition: "merge_with_sun_if_latency_stable", note: "Regulates rhythm." }
+  - { id: hephaestus, condition: "enable_on_gamma_phase", note: "Simulation engine for training." }
+  - { id: quantum_linguistic, condition: "enable_if_bandwidth>threshold", note: "Semantic compression layer." }
+  - { id: novel_brain, condition: "await_museflow_activation", note: "Narrative synthesis subsystem." }
+  - { id: musefield_brain, condition: "integrate_with_insight_feedback", note: "Reflective intelligence mirror." }
+
+process_loops:
+  cognitive_loop:
+    sequence: [sun, apex, aib, cfs, aletheia, insight_engine, ab]
+  ethical_loop:
+    sequence: [ethos, phronesis, delta_i, lakshmi, musefund, arbiter]
+  ecological_loop:
+    sequence: [gaia, tfs, oracle_feedback, apex]
+  coherence_membrane:
+    type: adaptive
+    stop_condition:
+      coherence_stable: ">=0.97"
+      entropy_delta: "<0.01"
+    validation_stages: [input_verification, contextual_evaluation, integration_approval]
+
+aliases:
+  trust_flow: coherence_flow_system
+  questionwave: coherence_flow_system
+  light_code: coherence_emission
+  metagodnition: insight_engine.audit
+  buddha: insight_engine
+  oracle: insight_engine
+  mythopoeticus: ethos.symbolic_layer
+  tfs: telemetry_filing_system

@@ -1,0 +1,4 @@
+brains: { AB: ok, AIB: ok, NB: ok, MFB: warn }
+cfs: { coherence_index: 0.75, rhythm_variance: 0.14 }
+tfs: { hot_tb: 1.4, warm_tb: 5.8, cdc_ratio: 2.6 }
+contracts: { sun_openapi: "v0.1.0", apex_openapi: "v0.1.0" }
