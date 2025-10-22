@@ -59,6 +59,22 @@ function microtest() {
   return { ok: res.status === 0 };
 }
 
+
+// --- MuseFund ratio from ledger
+function musefundRatio(ledgerPath, fallback=0.10) {
+  try {
+    if (!fs.existsSync(ledgerPath)) return fallback;
+    const rows = fs.readFileSync(ledgerPath, 'utf8').trim().split(/?
+/).filter(Boolean);
+    if (rows.length <= 1) return fallback; // only header
+    const last = rows[rows.length-1].split(',');
+    const profit = Number(last[2]);
+    const allocated = Number(last[4]);
+    if (!Number.isFinite(profit) || profit <= 0) return fallback;
+    const r = allocated / profit;
+    return (r >= 0 && Number.isFinite(r)) ? r : fallback;
+  } catch { return fallback; }
+}
 function computeReport({ playbookPath, schemaPath, reportsDir, thresholds }) {
   const schema = readYaml(schemaPath)?.aletheia_verification_schema;
   if (!schema) throw new Error('Invalid verification schema file.');
