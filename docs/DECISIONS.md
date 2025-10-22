@@ -22,3 +22,5 @@
 - 38eb91e 2025-10-22 **Write test as muse**
 - 9601de3 2025-10-22 **Add README and .gitignore**
 - 4115089 2025-10-22 **Add Playbook v1.1, Aletheia verification schema, and sample report**
+
+- 2025-10-22 **Adopt host-gateway probe for container→host health checks**
