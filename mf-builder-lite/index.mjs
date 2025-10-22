@@ -21,6 +21,21 @@ function loadConfig() {
   return { cfgPath, cfg: root.builder_config };
 }
 
+// --- MuseFund ratio from ledger
+function musefundRatio(ledgerPath, fallback=0.10) {
+  try {
+    if (!fs.existsSync(ledgerPath)) return fallback;
+    const rows = fs.readFileSync(ledgerPath, 'utf8').trim().split(/\r?\n/).filter(Boolean);
+    if (rows.length <= 1) return fallback; // header only
+    const last = rows[rows.length-1].split(',');
+    const profit = Number(last[2]);
+    const allocated = Number(last[4]);
+    if (!Number.isFinite(profit) || profit <= 0) return fallback;
+    const r = allocated / profit;
+    return (r >= 0 && Number.isFinite(r)) ? r : fallback;
+  } catch { return fallback; }
+}
+
 // -------- Git stats (last 14 days)
 function getGitStats(repoDir) {
   const since = '--since="14 days ago"';
@@ -39,47 +54,28 @@ function getGitStats(repoDir) {
 }
 
 // -------- Probe mf-runner
-function probe(urlEnv='/workspace') {
-  // call the host script so mounts work both host and container
-  const script = '/srv/musefield/scripts/mf-probe.sh';
-  const alt = '/workspace/scripts/mf-probe.sh';
-  const p = fs.existsSync(script) ? script : alt;
-  if (!fs.existsSync(p)) return null;
+function probe() {
+  const candidates = ['/srv/musefield/scripts/mf-probe.sh', '/workspace/scripts/mf-probe.sh'];
+  const p = candidates.find(f => fs.existsSync(f));
+  if (!p) return null;
   const out = spawnSync(p, [], { encoding: 'utf8' });
   try { return JSON.parse(out.stdout || '{}'); } catch { return null; }
 }
 
 // -------- Micro test
 function microtest() {
-  const script = '/srv/musefield/scripts/mf-microtest.sh';
-  const alt = '/workspace/scripts/mf-microtest.sh';
-  const p = fs.existsSync(script) ? script : alt;
-  if (!fs.existsSync(p)) return { ok: true };
+  const candidates = ['/srv/musefield/scripts/mf-microtest.sh', '/workspace/scripts/mf-microtest.sh'];
+  const p = candidates.find(f => fs.existsSync(f));
+  if (!p) return { ok: true };
   const res = spawnSync(p);
   return { ok: res.status === 0 };
 }
 
-
-// --- MuseFund ratio from ledger
-function musefundRatio(ledgerPath, fallback=0.10) {
-  try {
-    if (!fs.existsSync(ledgerPath)) return fallback;
-    const rows = fs.readFileSync(ledgerPath, 'utf8').trim().split(/?
-/).filter(Boolean);
-    if (rows.length <= 1) return fallback; // only header
-    const last = rows[rows.length-1].split(',');
-    const profit = Number(last[2]);
-    const allocated = Number(last[4]);
-    if (!Number.isFinite(profit) || profit <= 0) return fallback;
-    const r = allocated / profit;
-    return (r >= 0 && Number.isFinite(r)) ? r : fallback;
-  } catch { return fallback; }
-}
-function computeReport({ playbookPath, schemaPath, reportsDir, thresholds }) {
+function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }) {
   const schema = readYaml(schemaPath)?.aletheia_verification_schema;
   if (!schema) throw new Error('Invalid verification schema file.');
 
-  // Continuity with last report (optional)
+  // continuity
   let last = null;
   if (fs.existsSync(reportsDir)) {
     const files = fs.readdirSync(reportsDir).filter(f => f.startsWith('verification_report_')).sort();
@@ -87,10 +83,13 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds }) {
     if (latest) try { last = JSON.parse(readText(path.join(reportsDir, latest))); } catch {}
   }
 
-  // Baselines
+  const ledgerPath = cfg?.finance?.musefund?.ledger_path || '/workspace/reports/musefund-flow.csv';
+  const targetPct = cfg?.finance?.musefund?.target_percent ?? 0.10;
+
+  // baselines
   const metrics = {
     coherence_index:       safeN(last?.metrics?.coherence_index, 0.80),
-    fund_allocation_ratio: safeN(last?.metrics?.fund_allocation_ratio, 0.22),
+    fund_allocation_ratio: musefundRatio(ledgerPath, targetPct),
     rebuild_success_rate:  safeN(last?.metrics?.rebuild_success_rate, 0.95),
     normalized_throughput: safeN(last?.metrics?.normalized_throughput, 0.90),
     resource_use:          safeN(last?.metrics?.resource_use, 0.85),
@@ -101,28 +100,26 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds }) {
     latency_ms_avg:        safeN(last?.metrics?.latency_ms_avg, 250)
   };
 
-  // --- Git-derived transparency
+  // Git transparency
   const repoDir = process.env.REPO_DIR || '/workspace';
   let git = { window_days: 14, commits_last_14: 0, merges_last_14: 0, documented_decisions_last_14: 0 };
   try { git = getGitStats(repoDir); } catch {}
   metrics.total_decisions = Math.max(1, git.commits_last_14);
   metrics.documented_decisions = Math.min(metrics.total_decisions, git.documented_decisions_last_14);
 
-  // --- Probe-derived efficiency & accuracy
+  // Probe efficiency + accuracy
   const p = probe();
   if (p && Number.isFinite(p.avg_latency_ms)) {
     metrics.latency_ms_avg = p.avg_latency_ms;
-    // Throughput ~ requests per second normalized (1/latency)
     const rps = metrics.latency_ms_avg > 0 ? (1000/metrics.latency_ms_avg) : 0;
-    metrics.normalized_throughput = rps;  // dimensionless; schema normalizes vs resource_use
-    // Accuracy proxy: success ratio of health checks
+    metrics.normalized_throughput = rps;               // schema normalizes vs resource_use
     const success = safeN(p.ok_count, 0), n = safeN(p.samples, 1);
     metrics.error_rate = clamp(1 - (success / Math.max(n,1)), 0, 1);
   }
 
-  // --- Micro test → reproducibility
+  // Micro-test -> reproducibility
   const mt = microtest();
-  metrics.rebuild_success_rate = mt.ok ? 0.98 : 0.60; // crude but directional
+  metrics.rebuild_success_rate = mt.ok ? 0.98 : 0.60;
 
   // Scoring
   const w = schema.weights;
@@ -152,15 +149,15 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds }) {
   if (metrics.coherence_index < (t.min_coherence ?? 0.75))
     corrective_actions.push("Run schema reconciliation + minimal loop tests.");
   if ((pct.transparency/100) < (t.min_transparency ?? 0.70))
-    corrective_actions.push("Increase documented decisions (conventional commit messages / PR merges).");
+    corrective_actions.push("Increase documented decisions (conventional commits / PR merges).");
   if ((pct.accuracy/100) < (t.min_accuracy ?? 0.90))
-    corrective_actions.push("Investigate health probe failures; check mf-runner logs + error traces.");
+    corrective_actions.push("Investigate health probe failures; check mf-runner logs.");
   if ((pct.reproducibility/100) < (t.min_reproducibility ?? 0.95))
     corrective_actions.push("Stabilize micro-test; ensure deterministic builds.");
 
   return {
     report_id: `aletheia_verification_report_${Date.now()}`,
-    phase_name: "Automated – Builder Verification (Git + Probe)",
+    phase_name: "Automated – Builder Verification (Git + Probe + MuseFund)",
     date_range: { start: nowISO(), end: nowISO() },
     metrics: {
       ...metrics,
@@ -188,7 +185,7 @@ function main() {
   if (!fs.existsSync(schemaPath)) throw new Error(`Verification schema not found: ${schemaPath}`);
   if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
 
-  const rpt = computeReport({ playbookPath, schemaPath, reportsDir, thresholds: cfg.thresholds });
+  const rpt = computeReport({ playbookPath, schemaPath, reportsDir, thresholds: cfg.thresholds, cfg });
   const ts = new Date().toISOString().replace(/[:-]/g,'').replace(/\..+/,'') + "Z";
   const out = path.join(reportsDir, `verification_report_${ts}.json`);
   writeJSON(out, rpt);

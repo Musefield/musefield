@@ -11,23 +11,21 @@ n=5
 ok=0
 sum_ms=0
 for i in $(seq 1 $n); do
-  ms=$(curl -s -o /dev/null -w "%{time_total}" "$URL" || echo "0")
-  # time_total is in seconds; convert to ms
+  t=$(curl -s -o /dev/null -w "%{time_total}" "$URL" || echo "0")
+  # convert seconds -> ms safely
   ms=$(python3 - <<PY
 try:
-  print(int(float("$ms")*1000))
+  print(int(float("$t")*1000))
 except:
   print(0)
 PY
 )
-  if curl -s "$URL" | grep -qi "ok"; then ok=$((ok+1)); fi
+  body="$(curl -s "$URL" || true)"
+  if echo "$body" | grep -qi "ok"; then ok=$((ok+1)); fi
   sum_ms=$((sum_ms+ms))
 done
 
-avg_ms=0
-if [ "$n" -gt 0 ]; then avg_ms=$((sum_ms/n)); fi
-
-# Emit JSON
+avg_ms=$(( n>0 ? sum_ms/n : 0 ))
 cat <<JSON
 {
   "url": "$URL",
