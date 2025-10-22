@@ -4,6 +4,7 @@ import yaml from 'js-yaml';
 import { execSync, spawnSync } from 'child_process';
 
 const DEFAULT_CONFIG = '/srv/musefield/config/builder.manifest.yaml';
+const log = (...a)=>{ if (process.env.DEBUG) console.log(...a); };
 
 // helpers
 const readText = (p) => fs.readFileSync(p, 'utf8');
@@ -53,21 +54,22 @@ function getGitStats(repoDir) {
   return { window_days: 14, commits_last_14: commits, merges_last_14: merges, documented_decisions_last_14: documented };
 }
 
-// -------- Probe mf-runner
+// -------- Probe mf-runner (prefer /workspace path for containers)
 function probe() {
-  const candidates = ['/srv/musefield/scripts/mf-probe.sh', '/workspace/scripts/mf-probe.sh'];
+  const candidates = ['/workspace/scripts/mf-probe.sh', '/srv/musefield/scripts/mf-probe.sh'];
   const p = candidates.find(f => fs.existsSync(f));
-  if (!p) return null;
-  const out = spawnSync(p, [], { encoding: 'utf8' });
+  if (!p) { log('DBG probe: script not found'); return null; }
+  const out = spawnSync(p, [], { encoding: 'utf8', env: process.env });
+  log('DBG probe raw:', out.stdout?.trim());
   try { return JSON.parse(out.stdout || '{}'); } catch { return null; }
 }
 
 // -------- Micro test
 function microtest() {
-  const candidates = ['/srv/musefield/scripts/mf-microtest.sh', '/workspace/scripts/mf-microtest.sh'];
+  const candidates = ['/workspace/scripts/mf-microtest.sh', '/srv/musefield/scripts/mf-microtest.sh'];
   const p = candidates.find(f => fs.existsSync(f));
   if (!p) return { ok: true };
-  const res = spawnSync(p);
+  const res = spawnSync(p, [], { env: process.env });
   return { ok: res.status === 0 };
 }
 
@@ -98,7 +100,6 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
     documented_decisions:  0,
     total_decisions:       0,
     latency_ms_avg:        safeN(last?.metrics?.latency_ms_avg, 250)
-  if (process.env.DEBUG) console.log(JSON.stringify({DBG_metrics:metrics},null,2));
   };
 
   // Git transparency
@@ -112,6 +113,7 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
   const p = probe();
   if (p && Number.isFinite(p.avg_latency_ms)) {
     const success = safeN(p.ok_count, 0), n = safeN(p.samples, 1);
+    log('DBG probe parsed:', p, 'success:', success, 'n:', n);
     if (success > 0) {
       metrics.latency_ms_avg = p.avg_latency_ms;
       const rps = metrics.latency_ms_avg > 0 ? (1000/metrics.latency_ms_avg) : 0;
@@ -123,6 +125,8 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
   // Micro-test -> reproducibility
   const mt = microtest();
   metrics.rebuild_success_rate = mt.ok ? 0.98 : 0.60;
+
+  if (process.env.DEBUG) console.log(JSON.stringify({DBG_metrics:metrics}, null, 2));
 
   // Scoring
   const w = schema.weights;
@@ -174,7 +178,7 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
     anomalies_detected: [],
     corrective_actions,
     human_review: { reviewer: "", comments: "" },
-    generated_by: "MF Builder Lite v0.3.1"
+    generated_by: "MF Builder Lite v0.3.2"
   };
 }
 
