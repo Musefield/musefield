@@ -7,6 +7,7 @@ builder_config:
     rrule: "R/PT14D"
 
   thresholds:
+    min_transparency: 0.20
     min_coherence: 0.75
     min_code_integrity: 0.85
     min_automation_ratio: 0.70
