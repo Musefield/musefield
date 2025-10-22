@@ -98,6 +98,7 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
     documented_decisions:  0,
     total_decisions:       0,
     latency_ms_avg:        safeN(last?.metrics?.latency_ms_avg, 250)
+  if (process.env.DEBUG) console.log(JSON.stringify({DBG_metrics:metrics},null,2));
   };
 
   // Git transparency
