@@ -1,1 +1,7 @@
-{ "builder": { "enabled": false }, "web": true, "api": true }
+{
+  "builder": {
+    "enabled": true
+  },
+  "web": true,
+  "api": true
+}
