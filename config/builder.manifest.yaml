@@ -11,6 +11,11 @@ builder_config:
     min_coherence: 0.75
     min_code_integrity: 0.85
     min_automation_ratio: 0.70
+  finance:
+  musefund:
+    target_percent: 0.10     # start at 10% of profit
+    ledger_path: /workspace/reports/musefund-flow.csv
+    min_cash_buffer_usd: 0   # adjust once we model costs
   actions:
     on_pass:
       - write_summary_to_reflective_ledger
