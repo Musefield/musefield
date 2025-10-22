@@ -2,20 +2,24 @@ builder_config:
   playbook_path: /workspace/docs/playbooks/mf_ai_builder_playbook_v1_1.yaml
   verification_schema_path: /workspace/docs/verification/aletheia_verification_schema.yaml
   reports_dir: /workspace/reports/aletheia
+
   verification_schedule:
     rrule: "R/PT14D"
+
   thresholds:
-   min_transparency: 0.70
-   min_accuracy: 0.90
-   min_reproducibility: 0.95
     min_coherence: 0.75
     min_code_integrity: 0.85
     min_automation_ratio: 0.70
+    min_transparency: 0.70
+    min_accuracy: 0.90
+    min_reproducibility: 0.95
+
   finance:
-  musefund:
-    target_percent: 0.10     # start at 10% of profit
-    ledger_path: /workspace/reports/musefund-flow.csv
-    min_cash_buffer_usd: 0   # adjust once we model costs
+    musefund:
+      target_percent: 0.10
+      ledger_path: /workspace/reports/musefund-flow.csv
+      min_cash_buffer_usd: 0
+
   actions:
     on_pass:
       - write_summary_to_reflective_ledger
