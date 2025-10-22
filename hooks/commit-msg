@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+msgfile="$1"
+head="$(head -n1 "$msgfile")"
+if ! echo "$head" | grep -qiE '^(feat|fix|docs|refactor|chore|perf|test)(\(|:)\s'; then
+  echo "WARN: commit message not Conventional Commits (feat|fix|docs|refactor|chore|perf|test)."
+  echo "     top line was: '$head'"
+fi
