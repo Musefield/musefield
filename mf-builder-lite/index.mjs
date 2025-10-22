@@ -107,14 +107,16 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
   metrics.total_decisions = Math.max(1, git.commits_last_14);
   metrics.documented_decisions = Math.min(metrics.total_decisions, git.documented_decisions_last_14);
 
-  // Probe efficiency + accuracy
+  // Probe efficiency + accuracy — apply only if success>0
   const p = probe();
   if (p && Number.isFinite(p.avg_latency_ms)) {
-    metrics.latency_ms_avg = p.avg_latency_ms;
-    const rps = metrics.latency_ms_avg > 0 ? (1000/metrics.latency_ms_avg) : 0;
-    metrics.normalized_throughput = rps;               // schema normalizes vs resource_use
     const success = safeN(p.ok_count, 0), n = safeN(p.samples, 1);
-    metrics.error_rate = clamp(1 - (success / Math.max(n,1)), 0, 1);
+    if (success > 0) {
+      metrics.latency_ms_avg = p.avg_latency_ms;
+      const rps = metrics.latency_ms_avg > 0 ? (1000/metrics.latency_ms_avg) : 0;
+      metrics.normalized_throughput = rps; // schema normalizes vs resource_use
+      metrics.error_rate = clamp(1 - (success / Math.max(n,1)), 0, 1);
+    }
   }
 
   // Micro-test -> reproducibility
@@ -171,7 +173,7 @@ function computeReport({ playbookPath, schemaPath, reportsDir, thresholds, cfg }
     anomalies_detected: [],
     corrective_actions,
     human_review: { reviewer: "", comments: "" },
-    generated_by: "MF Builder Lite v0.3"
+    generated_by: "MF Builder Lite v0.3.1"
   };
 }
 
