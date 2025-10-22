@@ -1,5 +1,8 @@
 # Decisions (last 14 days)
 
+- 7059609 2025-10-22 **docs(decisions): log adoption of host-gateway probe for health checks**
+- 13c9138 2025-10-22 **chore(hooks): add versioned commit-msg hook (warn on non-conventional commits)**
+- 72a152c 2025-10-22 **docs: DECISIONS auto-sync + gentle commit-msg enforcement**
 - 4b37231 2025-10-22 **probe: robust JSON output + host-gateway aware**
 - ff8a3fa 2025-10-22 **Verifier v0.3.2: prefer /workspace scripts; DEBUG logging; relaxed micro-test**
 - 1d3f7c8 2025-10-22 **debug: print metrics when DEBUG=1**
@@ -22,5 +25,3 @@
 - 38eb91e 2025-10-22 **Write test as muse**
 - 9601de3 2025-10-22 **Add README and .gitignore**
 - 4115089 2025-10-22 **Add Playbook v1.1, Aletheia verification schema, and sample report**
-
-- 2025-10-22 **Adopt host-gateway probe for container→host health checks**
