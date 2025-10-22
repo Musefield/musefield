@@ -1,0 +1,170 @@
+manifest:
+  id: mf_ai_builder_playbook_v1_1
+  version: 1.1
+  title: "MuseField Six-Month Corrective Plan"
+  author: "MuseField Integration Council"
+  description: >
+    Structured operational map for the MF AI Builder.
+    Each phase defines deliverables and measurable success conditions.
+    Aletheia Verification Schema provides scoring for coherence, accuracy,
+    efficiency, transparency, and regeneration.
+
+principles:
+  clarity_over_mysticism:
+    description: >
+      Every build artifact must be interpretable by a human reviewer without
+      insider jargon. Mythic names allowed only in the /ontology directory.
+    verification: "90% of code comments use plain language."
+  coherence_as_primary_metric:
+    description: >
+      Inter-brain data flow coherence must exceed 0.75 before any feature
+      expansion. AIB, AB, NB, and MFB must share identical manifest hashes.
+    verification: "aletheia.diff == 0 and mean(coherence_index) >= 0.75"
+  regeneration_before_scaling:
+    description: >
+      No new agent or service may be added unless it demonstrably reduces
+      manual labor or increases resource efficiency by ≥10%.
+    verification: "efficiency_gain >= 0.10"
+  consent_through_rhythm:
+    description: >
+      Reflection prompts, data capture, and analytics must occur only on chosen
+      cycles (daily, weekly, lunar, or seasonal). Default = weekly.
+    verification: "prompt_frequency matches user_setting"
+  transparency_with_context:
+    description: >
+      All AI decisions influencing funding or visibility must be logged in
+      plain language with timestamps and rationale.
+    verification: "100% of MuseFund transactions include reason + timestamp"
+  minimal_humans_maximal_meaning:
+    description: >
+      Automate repetitive and mechanical tasks. Preserve human oversight only
+      for creative, ethical, or strategic decisions.
+    verification: "automation_ratio >= 0.70"
+  energy_to_meaning_conversion:
+    description: >
+      System resources (compute time, cost, or energy) should correlate with
+      insight production. Measured as insight/energy ratio.
+    verification: "insight_per_kwh > baseline * 1.1"
+  pruning_as_growth:
+    description: >
+      Obsolete modules must be archived quarterly. Total agent count should not
+      rise without proof of net coherence gain.
+    verification: "active_agents_(n+1) <= active_agents_n + delta_coherence"
+  reproducibility_first:
+    description: >
+      Every manifest or report must rebuild identically from source on a clean
+      environment using documented commands.
+    verification: "rebuild_success_rate >= 0.95"
+  regenerative_economy_alignment:
+    description: >
+      20% or more of operational savings must be redirected into MuseFund
+      projects with measurable social or ecological benefit.
+    verification: "allocation_to_musefund >= 0.20"
+
+timeline:
+  phase_0:
+    name: Bootstrap
+    goal: Establish a clean, verified environment.
+    actions:
+      - check_env: verify MFAIB_KEY
+      - start_services: [aib, sun, apex, aletheia]
+      - health_check: "curl /healthz -> ok"
+    success_metric: "uptime > 99%"
+    deliverable: "boot_report.json"
+
+  phase_1:
+    name: Schema Unification
+    goal: Synchronize data grammar across all brains.
+    actions:
+      - define_core_manifest: ["id", "process", "insight"]
+      - replace_legacy_schemas: true
+      - run_validation: aletheia.diff == 0
+    deliverable: "core_manifest.yaml"
+
+  phase_2:
+    name: Literal–Symbolic Modes
+    goal: Separate poetry from code.
+    actions:
+      - create_mode_dirs: [literal, symbolic]
+      - add_mode_switch: "build_mode: literal|symbolic"
+    deliverable: "builder_modes_config.yaml"
+
+  phase_3:
+    name: Minimal Loop Prototype
+    goal: Demonstrate end-to-end coherence.
+    actions:
+      - generate_loop_file: loop.ts
+      - deploy_dashboard: constellation-lite
+      - monitor_metrics: [coherence_index, rhythm_variance, latency_ms]
+    success_metric:
+      coherence_index: ">=0.75"
+      latency_ms: "<150"
+    deliverable: "loop_report.json"
+
+  phase_4:
+    name: Builder Intelligence Calibration
+    goal: Enable self-assessment and rebuild triggers.
+    actions:
+      - feed_exemplars: 5
+      - compute_metrics: [code_integrity, symbolic_drift, confidence]
+      - auto_rebuild_threshold: 0.85
+    deliverable: "builder_diagnostics.json"
+
+  phase_5:
+    name: Interface Reformation
+    goal: Replace spectacle with clarity.
+    actions:
+      - scaffold_ui: {theme: minimal, widgets: [FlowMap, MetricPulse]}
+      - enable_semantic_zoom: true
+      - rename_metrics:
+          coherence_index: Trust_Flow
+          rhythm_variance: Response_Stability
+    deliverable: "constellation_ui_v2"
+
+  phase_6:
+    name: Reflective Ledger Upgrade
+    goal: Transform ethics dashboard into reflective narrative.
+    actions:
+      - rename_module: EthicalLedger -> ReflectiveLedger
+      - set_privacy_rhythms: [daily, weekly, lunar, seasonal]
+      - add_story_templates: true
+    deliverable: "reflective_ledger_v1"
+
+  phase_7:
+    name: MuseFund Sandbox
+    goal: Pilot regenerative economic loop.
+    actions:
+      - deploy_container: musefund-sandbox
+      - register_hooks: [on_commit, on_merge_accept, on_review_feedback]
+      - export_ledger: reports/musefund-flow.csv
+      - audit_tokens: true
+    deliverable: "musefund_report.csv"
+
+  phase_8:
+    name: Autonomic Maintenance
+    goal: Nightly self-care routines.
+    actions:
+      - schedule_job: dream-cycle
+      - compress_logs: true
+      - refresh_truth_manifests: true
+      - summarize_weekly_state: true
+    deliverable: "weekly_state_report.md"
+
+  phase_9:
+    name: Governance and Pruning
+    goal: Remove bloat, redirect savings to MuseFund.
+    actions:
+      - scan_for_obsolete_agents: true
+      - archive_unused: /museum/
+      - compute_savings: true
+      - allocate_savings_to_musefund: true
+    deliverable: "governance_audit.json"
+
+  phase_10:
+    name: Review Orbit
+    goal: Generate meta-report and confirm cycle completion.
+    actions:
+      - compile_meta_report: [stability, economy, coherence]
+      - co_sign: [builder, aletheia]
+      - publish_to: /oracle/reports/alpha-completion.md
+    deliverable: "alpha_completion_report.md"

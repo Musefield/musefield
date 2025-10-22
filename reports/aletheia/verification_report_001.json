@@ -1,0 +1,36 @@
+{
+  "report_id": "aletheia_verification_report_001",
+  "phase_name": "Phase 3 – Minimal Loop Prototype",
+  "date_range": {
+    "start": "2025-10-01T00:00:00Z",
+    "end": "2025-10-31T23:59:59Z"
+  },
+  "metrics": {
+    "coherence_index": 0.82,
+    "error_rate": 0.04,
+    "normalized_throughput": 0.91,
+    "resource_use": 0.85,
+    "documented_decisions": 47,
+    "total_decisions": 50,
+    "fund_allocation_ratio": 0.23,
+    "rebuild_success_rate": 0.96
+  },
+  "weighted_scores": {
+    "coherence": 24.6,
+    "accuracy": 19.2,
+    "efficiency": 16.1,
+    "transparency": 14.1,
+    "regeneration": 9.2,
+    "reproducibility": 9.6
+  },
+  "total_score": 92.8,
+  "grade": "A",
+  "anomalies_detected": [],
+  "corrective_actions": [],
+  "human_review": {
+    "reviewer": "Jahree Élan Vital",
+    "comments": "Loop prototype achieved stable rhythm; maintain literal mode for next build."
+  },
+  "generated_by": "Aletheia Engine v1.0",
+  "output_path": "/reports/aletheia/verification_report_001.json"
+}
