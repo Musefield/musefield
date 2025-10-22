@@ -1,5 +1,33 @@
-# logs, local run artifacts
-*.log
-reports/*/*.tmp
-reports/*/*-scratch.json
+# node + pnpm
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+
+# env & local configs
 .env
+compose.env
+
+# build artifacts & docker cruft
+*.log
+*.tmp
+*.swp
+*.bak
+dist/
+coverage/
+
+# app data and caches
+data/
+diagnostics/
+workspace/
+logs/*.log
+
+# reports and generated outputs
+reports/
+*.report.json
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# generated compose backups
+compose.yml.bak
