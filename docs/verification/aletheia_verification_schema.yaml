@@ -20,21 +20,6 @@ aletheia_verification_schema:
   grade_scale:
     A: ">=90  — Exemplary alignment"
     B: "80–89 — Stable operation"
-    C: "70–79 — Functional but improvable"
-    D: "60–69 — Needs immediate tuning"
-    F: "<60   — Fails coherence standards"
-  reporting:
-    format: "JSON or Markdown summary"
-    frequency: "bi-weekly"
-    required_fields:
-      - phase_name
-      - date_range
-      - individual_metric_scores
-      - weighted_total
-      - anomalies_detected
-      - corrective_actions
-  audit_loop:
-    description: >
-      After each phase completion, Aletheia writes `verification_report.json`
-      to /reports/aletheia/ and posts a summary to the Reflective Ledger.
-    termination_condition: "three consecutive 'A' grades triggers next roadmap"
+    C: "70–79 — Needs improvement"
+    D: "60–69 — At risk"
+    F: "<60   — Failing"
