@@ -1,0 +1,31 @@
+version: 1
+assume_role: AIB
+prechecks:
+  - auth.has(['repo:write','deploy:canary'])
+  - cfs.coherence_index >= 0.7
+steps:
+  - name: write-tests
+    run: echo 'write tests stub ✅'
+  - name: scaffold
+    run: echo 'scaffold apps/web services/sun services/apex ✅'
+  - name: migrate
+    run: echo 'apply migrations ✅'
+  - name: canary
+    run: echo 'deploy canary 1% ✅'
+  - name: verify
+    run: echo 'verify CFS>=0.7 ✅'
+  - name: docs
+    run: echo 'docs updated ✅'
+on_fail:
+  - when: verify
+    run: echo 'rollback 🚒'
+meta:
+  objective: Boot AIB→Sun→Apex pipeline and web skeleton
+  done_when:
+    - web dev shows Home & Metrics
+    - contracts compile and smoke tests pass
+    - Ethical Ledger entry appended
+  world_cfs:
+    coherence_index: 0.75
+    rhythm_variance: 0.14
+  self_id: aib.builder.sun.apex

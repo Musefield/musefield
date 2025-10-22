@@ -5,7 +5,8 @@ services:
       POSTGRES_DB: musefield
       POSTGRES_USER: muse
       POSTGRES_PASSWORD: musepass
-    volumes: [db_data:/var/lib/postgresql/data]
+    volumes:
+      - db_data:/var/lib/postgresql/data
     ports: ["5432:5432"]
 
   minio:
@@ -14,7 +15,8 @@ services:
     environment:
       MINIO_ROOT_USER: muse
       MINIO_ROOT_PASSWORD: musepass
-    volumes: [minio_data:/data]
+    volumes:
+      - minio_data:/data
     ports: ["9000:9000","9001:9001"]
 
   sun:
@@ -27,7 +29,10 @@ services:
     build: ./services/apex
     env_file: .env
     depends_on: [sun, db]
-    ports: ["8083:8082"]
+    ports: ["8083:8082"]            # host 8083 -> container 8082
+    volumes:
+      - ./truth:/truth:ro           # read-only truth
+      - ./plan.mf.yaml:/out/plan.mf.yaml  # write plan to host file
 
   aib:
     build: ./services/aib
@@ -44,4 +49,7 @@ services:
     env_file: .env
     depends_on: [apex, sun]
     ports: ["5173:5173"]
-volumes: { db_data: {}, minio_data: {} }
+
+volumes:
+  db_data: {}
+  minio_data: {}
