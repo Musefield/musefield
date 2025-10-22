@@ -1,0 +1,5 @@
+# logs, local run artifacts
+*.log
+reports/*/*.tmp
+reports/*/*-scratch.json
+.env
