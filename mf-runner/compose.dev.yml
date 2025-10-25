@@ -1,0 +1,25 @@
+services:
+  runner:
+    image: node:20-bullseye
+    working_dir: /app
+    ports:
+      - "8081:8081"
+    environment:
+      CI: "true"
+      PORT: "8081"
+      MF_DB: /app/data/mf.db
+      MF_AIB_KEY: ${MF_AIB_KEY:-set-a-long-random-secret}
+    volumes:
+      - ./:/app
+    command: >
+      bash -lc "
+      set -euo pipefail
+      && apt-get update
+      && apt-get install -y --no-install-recommends python3 build-essential libsqlite3-dev
+      && corepack enable
+      && (pnpm --version || corepack prepare pnpm@10.19.0 --activate)
+      && mkdir -p /app/data
+      && rm -rf node_modules .pnpm-store
+      && pnpm install --unsafe-perm --prefer-offline
+      && pnpm tsx src/server.ts
+      "

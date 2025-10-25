@@ -1,0 +1,5 @@
+{
+  "name": "apex",
+  "version": "0.1.0",
+  "dependencies": { "express": "^4.19.2", "js-yaml": "^4.1.0" }
+}

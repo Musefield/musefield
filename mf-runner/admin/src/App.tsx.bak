@@ -1,0 +1,28 @@
+
+import React, { useEffect, useState } from "react";
+const API = import.meta.env.VITE_MF_API_BASE || "http://127.0.0.1:8081";
+const KEY = import.meta.env.VITE_MF_API_KEY || "";
+type RowT = { id:string; title:string; kind:string; status:string; created_at:string };
+export default function App(){
+  const [rows, setRows] = useState<RowT[]>([]);
+  const [ping, setPing] = useState("…");
+  useEffect(() => {
+    fetch(`${API}/healthz`).then(r=>r.json()).then(j=>setPing(JSON.stringify(j))).catch(()=>setPing("error"));
+    fetch(`${API}/tasks`, { headers: { "x-mfaib-key": KEY }})
+      .then(r => r.ok ? r.json() : Promise.reject(r)).then(setRows).catch(()=>setRows([]));
+  }, []);
+  return (
+    <div style={{fontFamily:"ui-sans-serif,system-ui",padding:24}}>
+      <h1 style={{fontSize:28,marginBottom:8}}>MuseField Admin</h1>
+      <div style={{opacity:.7,marginBottom:16}}>healthz: {ping}</div>
+      <h2 style={{fontSize:18,margin:"16px 0 8px"}}>Recent Tasks</h2>
+      <table cellPadding={6} style={{borderCollapse:"collapse",width:"100%"}}>
+        <thead><tr><th>ID</th><th>Title</th><th>Kind</th><th>Status</th><th>Created</th></tr></thead>
+        <tbody>{rows.map((r,i)=>(
+          <tr key={i}><td>{r.id}</td><td>{r.title}</td><td>{r.kind}</td><td>{r.status}</td><td>{r.created_at}</td></tr>
+        ))}</tbody>
+      </table>
+    </div>
+  );
+}
+

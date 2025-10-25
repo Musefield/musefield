@@ -1,0 +1,25 @@
+aletheia_verification_schema:
+  description: >
+    Checklist and scoring framework for Aletheia’s integrity audits.
+    Each phase receives a 0-100 score based on weighted metrics.
+  weights:
+    coherence: 0.30
+    accuracy: 0.20
+    efficiency: 0.15
+    transparency: 0.15
+    regeneration: 0.10
+    reproducibility: 0.10
+  scoring_method:
+    - coherence: "mean(coherence_index) × 100"
+    - accuracy: "(1 - error_rate) × 100"
+    - efficiency: "normalized throughput / resource_use × 100"
+    - transparency: "documented_decisions / total_decisions × 100"
+    - regeneration: "fund_allocation_ratio × 100"
+    - reproducibility: "rebuild_success_rate × 100"
+    - total_score: "Σ(weight_i × metric_i)"
+  grade_scale:
+    A: ">=90  — Exemplary alignment"
+    B: "80–89 — Stable operation"
+    C: "70–79 — Needs improvement"
+    D: "60–69 — At risk"
+    F: "<60   — Failing"
