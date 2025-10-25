@@ -16,6 +16,8 @@ steps:
     run: echo 'verify CFS>=0.7 ✅'
   - name: docs
     run: echo 'docs updated ✅'
+  - commit: 'chore(plan): update plan.mf.yaml [autogen]'
+  - push: main
 on_fail:
   - when: verify
     run: echo 'rollback 🚒'

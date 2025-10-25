@@ -1,0 +1,46 @@
+name: musefield
+
+networks:
+  appnet:
+    driver: bridge
+
+services:
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - AIB_DOMAIN=${AIB_DOMAIN}
+      - WEB_DOMAIN=${WEB_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - aib
+      - web
+    networks: [appnet]
+
+  aib:
+    image: your/aib:latest        # <- replace with your real image
+    restart: unless-stopped
+    expose:
+      - "8082"                    # internal-only
+    environment:
+      - NODE_ENV=production
+    networks: [appnet]
+
+  web:
+    image: your/web:latest        # <- replace with your real image
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - NODE_ENV=production
+    networks: [appnet]
+
+volumes:
+  caddy_data:
+  caddy_config:

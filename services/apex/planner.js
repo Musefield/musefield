@@ -5,10 +5,7 @@ const yaml = require('js-yaml');
 const IN_DIR  = '/truth';
 const OUT_DIR = '/out';
 
-function loadY(rel) {
-  const p = path.join(IN_DIR, rel);
-  return yaml.load(fs.readFileSync(p, 'utf8'));
-}
+function loadY(rel) { return yaml.load(fs.readFileSync(path.join(IN_DIR, rel), 'utf8')); }
 
 function buildPlan() {
   const objective = loadY('objective.yaml');
@@ -32,7 +29,9 @@ function buildPlan() {
       { name: 'migrate',     run: "echo 'apply migrations ✅'" },
       { name: 'canary',      run: "echo 'deploy canary 1% ✅'" },
       { name: 'verify',      run: `echo 'verify CFS>=${cfsMin} ✅'` },
-      { name: 'docs',        run: "echo 'docs updated ✅'" }
+      { name: 'docs',        run: "echo 'docs updated ✅'" },
+      { commit: "chore(plan): update plan.mf.yaml [autogen]" },
+      { push: "main" }
     ],
     on_fail: [{ when: 'verify', run: "echo 'rollback 🚒'" }],
     meta: {

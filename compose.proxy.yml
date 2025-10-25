@@ -1,0 +1,30 @@
+name: musefield
+
+networks:
+  musefield_default:
+    external: true
+
+services:
+  proxy:
+    image: caddy:2
+    restart: unless-stopped
+    networks: [musefield_default]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - warmup
+
+  # tiny init that exits once the network names resolve
+  warmup:
+    image: busybox
+    command: sh -lc "sleep 1"
+    networks: [musefield_default]
+
+volumes:
+  caddy_data:
+  caddy_config:

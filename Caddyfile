@@ -1,0 +1,22 @@
+# MuseField Local Proxy Map (dev)
+
+aib.local.muse {
+    reverse_proxy apex:8082
+    tls internal
+}
+
+web.local.muse {
+    reverse_proxy sun:8080
+    tls internal
+}
+
+analytics.local.muse {
+    # reverse_proxy gaia:8090   # uncomment when gaia is running
+    respond /healthz 200 "analytics-ok"
+    tls internal
+}
+
+# Optional: fallback route to show active domains
+:80 {
+    respond 200 "MuseField proxy active. Use https://aib.local.muse or https://web.local.muse"
+}

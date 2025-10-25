@@ -1,0 +1,13 @@
+{
+  "name": "mf-api",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "hono": "^4.5.3",
+    "undici": "^6.19.8"
+  }
+}

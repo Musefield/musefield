@@ -3,17 +3,21 @@ const fs = require('fs');
 const yaml = require('js-yaml');
 const { buildPlan, savePlan } = require('./planner');
 const { append } = require('./ledger');
-const { runPlan } = require('./runner');
+const { runPlan, runCmd } = require('./runner');
 
 const app = express();
 app.use(express.json());
 const PORT = process.env.PORT || 8082;
 
 function flagsEnabled() {
-  try {
-    const flags = JSON.parse(fs.readFileSync('/app/../config/flags.json','utf8'));
-    return !!(flags.builder && flags.builder.enabled);
-  } catch { return false; }
+  const candidates = ['/repo/config/flags.json', '/app/../config/flags.json'];
+  for (const p of candidates) {
+    try {
+      const flags = JSON.parse(fs.readFileSync(p,'utf8'));
+      return !!(flags.builder && flags.builder.enabled);
+    } catch {}
+  }
+  return false;
 }
 
 let hits = 0;
@@ -37,13 +41,15 @@ app.post('/execute', async (_req, res) => {
   try {
     const plan = yaml.load(fs.readFileSync('/out/plan.mf.yaml', 'utf8'));
     if (!flagsEnabled()) {
-      const wouldRun = (plan.steps || []).map(s => s.run);
+      const wouldRun = (plan.steps || []).map(s => s.run || s.commit || s.push);
       append({ ts: new Date().toISOString(), action: "plan_execute_simulated", steps: wouldRun.length });
       return res.json({ ok: true, steps: wouldRun, note: "simulation only (builder.disabled)" });
     }
     const results = await runPlan(plan);
-    append({ ts: new Date().toISOString(), action: "plan_executed", steps: results.length });
-    res.json({ ok: true, results });
+    let sha = null;
+    try { const { out } = await runCmd('git rev-parse HEAD'); sha = out.trim(); } catch {}
+    append({ ts: new Date().toISOString(), action: "plan_executed", steps: results.length, sha });
+    res.json({ ok: true, results, sha });
   } catch (e) {
     res.status(500).json({ ok: false, error: String(e) });
   }
