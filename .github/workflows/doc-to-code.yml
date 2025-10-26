@@ -1,0 +1,39 @@
+name: Doc to Code (MuseField)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours (optional)
+
+jobs:
+  build-from-docs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai==1.* requests PyJWT cryptography
+
+      - name: Generate code from Google Docs
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GDRIVE_SA_JSON_B64: ${{ secrets.GDRIVE_SA_JSON_B64 }}
+          DOC_IDS: ${{ secrets.DOC_IDS }}
+          OPENAI_MODEL: gpt-4.1-mini
+          BASE_BRANCH: main
+          BRANCH_NAME: bot/doc-sync
+          ALLOWLIST: mf-runner/,apps/,packages/
+        run: |
+          python scripts/doc_to_code.py
